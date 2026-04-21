@@ -9,24 +9,17 @@ import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Main class to bootstrap the embedded Grizzly HTTP server.
- */
+// main class to start the embedded grizzly server
 public class Main {
-    // Base URI the Grizzly HTTP server will listen on
+    // base url for the server
     public static final String BASE_URI = "http://localhost:9090/";
 
-    /**
-     * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
-     * @return Grizzly HTTP server.
-     */
+    // starts the server with jersey resources
     public static HttpServer startServer() {
-        // create a resource config that scans for JAX-RS resources and providers
-        // AppConfig handles the actual configuration.
+        // setting up resource config to scan classes
         final ResourceConfig rc = new AppConfig();
 
-        // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
+        // create and start the server
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
@@ -36,7 +29,7 @@ public class Main {
             System.out.println(String.format("Jersey app started with endpoints available at "
                     + "%sapi/v1\nHit Ctrl-C to stop it...", BASE_URI));
             
-            // Keep the server running
+            // keep server running until stopped
             Thread.currentThread().join();
         } catch (InterruptedException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

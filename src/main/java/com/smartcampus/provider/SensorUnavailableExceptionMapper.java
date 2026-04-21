@@ -8,11 +8,13 @@ import jakarta.ws.rs.ext.Provider;
 
 import com.smartcampus.model.ErrorResponse;
 
+// map sensor offline exception to 403 forbidden
 @Provider
 public class SensorUnavailableExceptionMapper implements ExceptionMapper<SensorUnavailableException> {
 
     @Override
     public Response toResponse(SensorUnavailableException exception) {
+        // returning forbidden if sensor is offline
         ErrorResponse response = new ErrorResponse("Forbidden", exception.getMessage());
 
         return Response.status(Response.Status.FORBIDDEN)

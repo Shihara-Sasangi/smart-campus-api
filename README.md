@@ -1,61 +1,9 @@
 # Smart Campus REST API
 
+S.M.N.Shihara Sasangi
+w2120008 / 20232354
 This project is a RESTful API for a "Smart Campus" Sensor & Room Management system built using Java and JAX-RS (Jersey) with an embedded Grizzly server. It strictly adheres to coursework requirements by using in-memory data structures (HashMaps and ArrayLists) and avoids external frameworks like Spring Boot or SQL databases.
 
-## Setup & Running the Server
-
-### Prerequisites
-- **Java Development Kit (JDK) 17** or higher.
-- **Apache Maven** installed and added to your system PATH.
-
-### Build and Run
-1. Open your terminal or command prompt in the root of this project directory (where this `pom.xml` is located).
-2. Clean and compile the project using Maven:
-   ```bash
-   mvn clean package
-   ```
-3. Run the server using the Maven Exec Plugin:
-   ```bash
-   mvn exec:java
-   ```
-4. The server will start and be available at: `http://localhost:8080/api/v1`
-
-## Sample API Interactions (cURL commands)
-
-Below are 5 sample `curl` commands demonstrating successful interactions with different parts of the API.
-
-**1. Discovery Endpoint (GET Metadata)**
-```bash
-curl -X GET http://localhost:8080/api/v1
-```
-
-**2. Create a Room (POST)**
-```bash
-curl -X POST http://localhost:8080/api/v1/rooms \
--H "Content-Type: application/json" \
--d '{"id": "LEC-01", "name": "Main Lecture Hall", "capacity": 200}'
-```
-
-**3. Fetch All Rooms (GET)**
-```bash
-curl -X GET http://localhost:8080/api/v1/rooms
-```
-
-**4. Register a Sensor in a Room (POST)**
-```bash
-curl -X POST http://localhost:8080/api/v1/sensors \
--H "Content-Type: application/json" \
--d '{"id": "CO2-01", "type": "CO2", "status": "ACTIVE", "currentValue": 400.0, "roomId": "LEC-01"}'
-```
-
-**5. Post a Sensor Reading (POST)**
-```bash
-curl -X POST http://localhost:8080/api/v1/sensors/CO2-01/readings \
--H "Content-Type: application/json" \
--d '{"value": 415.5}'
-```
-
----
 
 ## Conceptual Report
 

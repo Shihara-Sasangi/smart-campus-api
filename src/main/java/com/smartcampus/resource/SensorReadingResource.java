@@ -25,7 +25,7 @@ public class SensorReadingResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReadings() {
-        // Validate sensor exists
+        // check if sensor actually exists
         Sensor sensor = db.getSensors().get(sensorId);
         if (sensor == null) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -41,7 +41,7 @@ public class SensorReadingResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createReading(SensorReading reading) {
-        // Validate sensor exists
+        // check if sensor exists again
         Sensor sensor = db.getSensors().get(sensorId);
         if (sensor == null) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -49,24 +49,24 @@ public class SensorReadingResource {
                            .build();
         }
 
-        // State Constraint: Sensor must not be in MAINTENANCE or OFFLINE
+        // sensors cant accept readings if they are offline or broken
         if ("MAINTENANCE".equalsIgnoreCase(sensor.getStatus()) || "OFFLINE".equalsIgnoreCase(sensor.getStatus())) {
             throw new SensorUnavailableException("Sensor " + sensorId + " is currently " + sensor.getStatus() + " and cannot accept new readings.");
         }
 
-        // Ensure reading has an ID and timestamp if not provided by client
+        // if client didnt send id, we generate it
         if (reading.getId() == null) {
             reading = new SensorReading(reading.getValue());
         }
 
-        // Add reading to history
+        // storing the reading in history
         db.getSensorReadings().computeIfAbsent(sensorId, k -> new ArrayList<>());
         
         synchronized (db.getSensorReadings().get(sensorId)) {
             db.getSensorReadings().get(sensorId).add(reading);
         }
 
-        // Side Effect: Update currentValue on the corresponding parent Sensor object
+        // update the latest value on the sensor itself
         sensor.setCurrentValue(reading.getValue());
 
         return Response.created(URI.create("/api/v1/sensors/" + sensorId + "/readings/" + reading.getId()))

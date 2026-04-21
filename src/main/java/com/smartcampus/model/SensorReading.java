@@ -3,9 +3,9 @@ package com.smartcampus.model;
 import java.util.UUID;
 
 public class SensorReading {
-    private String id; // Unique reading event ID
-    private long timestamp; // Epoch time (ms) when the reading was captured
-    private double value; // The actual metric value recorded by the hardware
+    private String id; // reading id
+    private long timestamp; // when it was recorded in ms
+    private double value; // the actual measurement value
 
     public SensorReading() {
         this.id = UUID.randomUUID().toString();

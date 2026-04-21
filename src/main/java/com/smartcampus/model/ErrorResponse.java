@@ -1,5 +1,6 @@
 package com.smartcampus.model;
 
+// formatting error responses nicely
 public class ErrorResponse {
     private String error;
     private String message;

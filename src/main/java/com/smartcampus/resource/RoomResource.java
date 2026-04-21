@@ -19,6 +19,7 @@ public class RoomResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllRooms() {
+        // get all rooms from db
         Collection<Room> rooms = db.getRooms().values();
         return Response.ok(rooms).build();
     }
@@ -27,12 +28,14 @@ public class RoomResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createRoom(Room room) {
+        // basic check if id is empty
         if (room.getId() == null || room.getId().trim().isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST)
                            .entity(new ErrorResponse("Bad Request", "Room ID is required"))
                            .build();
         }
         
+        // don't allow duplicate room ids
         if (db.getRooms().containsKey(room.getId())) {
             return Response.status(Response.Status.CONFLICT)
                            .entity(new ErrorResponse("Conflict", "Room with this ID already exists"))
@@ -50,6 +53,7 @@ public class RoomResource {
     @Path("/{roomId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRoom(@PathParam("roomId") String roomId) {
+        // fetch the specific room
         Room room = db.getRooms().get(roomId);
         if (room == null) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -65,16 +69,14 @@ public class RoomResource {
     public Response deleteRoom(@PathParam("roomId") String roomId) {
         Room room = db.getRooms().get(roomId);
         
-        // If room is not found, returning 404 is a valid approach, 
-        // though some idempotent implementations prefer 204 or 200.
-        // The coursework specifically notes returning 404 on subsequent requests.
+        // if room is not there, return 404
         if (room == null) {
             return Response.status(Response.Status.NOT_FOUND)
                            .entity(new ErrorResponse("Not Found", "Room not found"))
                            .build();
         }
 
-        // Business Logic Constraint: Cannot delete if active sensors are assigned
+        // rule: cant delete if sensors are still in the room
         if (room.getSensorIds() != null && !room.getSensorIds().isEmpty()) {
             throw new RoomNotEmptyException("Cannot delete room " + roomId + " because it still has sensors assigned to it.");
         }

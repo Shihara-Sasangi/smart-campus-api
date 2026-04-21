@@ -22,8 +22,10 @@ public class SensorResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSensors(@QueryParam("type") String type) {
+        // grab all sensors from memory
         Collection<Sensor> allSensors = db.getSensors().values();
         
+        // filter by type if provided
         if (type != null && !type.trim().isEmpty()) {
             List<Sensor> filtered = allSensors.stream()
                 .filter(s -> type.equalsIgnoreCase(s.getType()))
@@ -50,7 +52,7 @@ public class SensorResource {
                            .build();
         }
 
-        // Validate that the roomId specified actually exists
+        // check if room exists before adding sensor to it
         Room room = db.getRooms().get(sensor.getRoomId());
         if (room == null) {
             throw new LinkedResourceNotFoundException("Room with ID " + sensor.getRoomId() + " does not exist.");
@@ -64,7 +66,7 @@ public class SensorResource {
 
         db.getSensors().put(sensor.getId(), sensor);
         
-        // Add sensor to the room's list of sensors (synchronize to prevent race conditions on the List)
+        // adding sensor to room (sync to avoid weird thread issues)
         synchronized (room.getSensorIds()) {
             room.getSensorIds().add(sensor.getId());
         }
@@ -74,7 +76,7 @@ public class SensorResource {
                        .build();
     }
 
-    // Sub-Resource Locator Pattern
+    // sub-resource routing to handle readings
     @Path("/{sensorId}/readings")
     public SensorReadingResource getSensorReadingResource(@PathParam("sensorId") String sensorId) {
         return new SensorReadingResource(sensorId);

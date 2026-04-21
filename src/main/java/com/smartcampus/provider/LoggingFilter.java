@@ -9,6 +9,7 @@ import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+// intercept requests and responses to log them
 @Provider
 public class LoggingFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
@@ -16,6 +17,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        // log when request comes in
         String method = requestContext.getMethod();
         String uri = requestContext.getUriInfo().getRequestUri().toString();
         logger.info("Incoming request: " + method + " " + uri);
@@ -23,6 +25,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+        // log when response goes out
         int status = responseContext.getStatus();
         String method = requestContext.getMethod();
         String uri = requestContext.getUriInfo().getRequestUri().toString();

@@ -9,20 +9,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Singleton class to act as an in-memory database using Maps and Lists.
- * ConcurrentHashMap is used to ensure thread safety across JAX-RS requests.
- */
+// singleton database class using in-memory maps
+// concurrent hashmap to make it thread safe
 public class Database {
     private static Database instance;
     
-    // In-memory data stores
+    // where i store my data
     private final Map<String, Room> rooms = new ConcurrentHashMap<>();
     private final Map<String, Sensor> sensors = new ConcurrentHashMap<>();
     private final Map<String, List<SensorReading>> sensorReadings = new ConcurrentHashMap<>();
 
     private Database() {
-        // Pre-populate with some initial data for easier testing
+        // adding some dummy data to test
         Room room1 = new Room("LIB-301", "Library Quiet Study", 50);
         rooms.put(room1.getId(), room1);
         
